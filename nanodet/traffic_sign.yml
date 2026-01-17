@@ -1,0 +1,99 @@
+# ==============================
+# Traffic Sign Detection - NanoDet
+# ==============================
+
+save_dir: ./workdirs/traffic_sign
+
+# ------------------------------
+# MODEL (OFFICIAL NANODET-PLUS)
+# ------------------------------
+model:
+  arch:
+    name: NanoDetPlus
+
+    backbone:
+      name: ShuffleNetV2
+      scale: 1.0
+      out_stages: [2, 3, 4]
+
+    neck:
+      name: PAN
+      in_channels: [116, 232, 464]
+      out_channels: 96
+
+    head:
+      name: NanoDetPlusHead
+      num_classes: 21
+      input_channel: 96
+      stacked_convs: 2
+      feat_channels: 96
+
+    aux_head:
+      name: NanoDetAuxHead
+      num_classes: 21
+      input_channel: 96
+      stacked_convs: 2
+      feat_channels: 96
+
+# ------------------------------
+# DATA
+# ------------------------------
+data:
+  train:
+    name: CocoDataset
+    img_path: /home/newin/projects/Nano_sign/yolodark/train/images
+    ann_path: /home/newin/projects/Nano_sign/dataset/annotations/instances_train.json
+    input_size: [320, 320]
+    keep_ratio: true
+    pipeline: {}
+
+  val:
+    name: CocoDataset
+    img_path: /home/newin/projects/Nano_sign/yolodark/valid/images
+    ann_path: /home/newin/projects/Nano_sign/dataset/annotations/instances_val.json
+    input_size: [320, 320]
+    keep_ratio: true
+    pipeline: {}
+
+# ------------------------------
+# CLASSES
+# ------------------------------
+class_names:
+  - Keep left
+  - Keep right
+  - No U-turn
+  - No left turn
+  - No parking
+  - No right turn
+  - No stopping
+  - Parking
+  - Pedestrian Crossing
+  - Speed Limit -100-
+  - Speed Limit -30-
+  - Speed Limit -60-
+  - Stop Sign
+  - Traffic Light -Green-
+  - Traffic Light -Red-
+  - Traffic Light -Yellow-
+  - U-turn
+  - bike
+  - motobike
+  - person
+  - vehicle
+
+# ------------------------------
+# DEVICE (CPU)
+# ------------------------------
+device:
+  gpu_ids: [-1]
+  batchsize_per_gpu: 2
+  workers_per_gpu: 2
+
+# ------------------------------
+# TRAINING
+# ------------------------------
+schedule:
+  optimizer:
+    name: Adam
+    lr: 0.001
+  total_epochs: 10
